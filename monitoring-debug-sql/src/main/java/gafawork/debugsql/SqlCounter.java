@@ -1,4 +1,4 @@
-package debugsql;
+package gafawork.debugsql;
 
 public class SqlCounter {
 

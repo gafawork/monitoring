@@ -1,4 +1,4 @@
-package debugsql;
+package gafawork.debugsql;
 
 
 import org.hibernate.resource.jdbc.spi.StatementInspector;
@@ -11,19 +11,14 @@ public class CountStatementInspector implements StatementInspector {
         DebugSqlCounter counter = DebugSqlCounter.get();
 
         if (sqlLower.startsWith("select")) {
-            int selectCount = counter.getSelectCount();
-            counter.setSelectCount(selectCount++);
+            counter.setSelectCount(counter.getSelectCount() + 1);
 
         } else if (sqlLower.startsWith("insert")) {
-            int insertCount = counter.getInsertCount();
-            counter.setInsertCount(insertCount++);
+            counter.setSelectCount(counter.getSelectCount() + 1);
         } else if (sqlLower.startsWith("update")) {
-            int updateCount = counter.getUpdateCount();
-            counter.setUpdateCount(updateCount++);
-
+            counter.setUpdateCount(counter.getUpdateCount() + 1);
         } else if (sqlLower.startsWith("delete")) {
-            int deleteCount = counter.getDeleteCount();
-            counter.setDeleteCount(deleteCount++);
+            counter.setDeleteCount(counter.getDeleteCount() + 1);
         }
 
         return sql;

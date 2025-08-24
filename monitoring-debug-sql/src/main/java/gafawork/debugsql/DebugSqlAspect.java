@@ -1,4 +1,4 @@
-package debugsql;
+package gafawork.debugsql;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;

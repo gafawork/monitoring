@@ -1,34 +1,35 @@
-package debugsql;
+package gafawork.debugsql;
 
-import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class DebugSqlCounter {
     private static final ThreadLocal<DebugSqlCounter> COUNTER = ThreadLocal.withInitial(DebugSqlCounter::new);
 
-    private static final HashMap<String, SqlCounter> sqlCountsMax = new HashMap<>();
+    private static final Map<String, SqlCounter> sqlCountsMax = new ConcurrentHashMap<>();
 
     private int selectCount = 0;
     private int insertCount = 0;
     private int updateCount = 0;
     private int deleteCount = 0;
 
+    public static void clear() {
+        COUNTER.remove();
+    }
 
     public void logSql(String nameMethod, SqlCounter sqlCounter) {
-        if (sqlCountsMax.containsKey(nameMethod)) {
-            // remove if the new one is greater
-            SqlCounter existing = sqlCountsMax.get(nameMethod);
-            if (sqlCounter.getTotal() > existing.getTotal()) {
-                sqlCountsMax.put(nameMethod, sqlCounter);
+        sqlCountsMax.compute(nameMethod, (key, existing) -> {
+            if (existing == null || sqlCounter.getTotal() > existing.getTotal()) {
+                return sqlCounter;
             }
-        } else {
-            sqlCountsMax.put(nameMethod, sqlCounter);
-        }
+            return existing;
+        });
     }
 
     public static Map<String, SqlCounter> getSqlCountsMax() {
         return sqlCountsMax;
     }
+
     public static DebugSqlCounter get() {
         return COUNTER.get();
     }
